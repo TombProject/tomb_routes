@@ -5,11 +5,18 @@ import venusian
 
 class MatchdictMapper(object):
     def __init__(self, **kwargs):
-        pass
+        self.blacklist = [
+            'optional_slash',
+        ]
 
     def __call__(self, view):
         def wrapper(context, request):
-            return view(request, **request.matchdict)
+            kwargs = request.matchdict.copy()
+            for k in self.blacklist:
+                if k in kwargs:
+                    del kwargs[k]
+
+            return view(request, **kwargs)
 
         return wrapper
 
