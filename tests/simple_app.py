@@ -10,9 +10,9 @@ def decorated_view(request):
     return {'foo': 'bar'}
 
 
-@simple_route('/path/to/decorated/view/func/{name}', renderer='json')
-def matchdict_view(request, name):
-    return {'foo': name}
+@simple_route('/matchdict/{name}/{number}', renderer='json')
+def matchdict_view(request, name, number):
+    return {'foo': name, 'bar': number}
 
 
 class MyViewsClass(object):
@@ -22,3 +22,7 @@ class MyViewsClass(object):
     @simple_route('/path/to/decorated/view/method', renderer='json')
     def imperative_view(self):
         return {'foo': 'bar'}
+
+    @simple_route('/matchdict/{name}/{number}', renderer='json')
+    def matchdict_view(self, name, number):
+        return {'foo': name, 'bar': number}

@@ -99,3 +99,33 @@ def test_declarative_config_method():
 
     assert response.content_type == 'application/json'
     assert response.json == {'foo': 'bar'}
+
+
+@pytest.mark.integration
+def test_matchdict_method():
+    config = _make_config()
+    config.scan('tests.simple_app')
+
+    response = _make_app(config).get(
+        '/matchdict/sontek/1', status=200
+    )
+
+    assert response.content_type == 'application/json'
+    assert response.json == {'foo': 'sontek', 'bar': '1'}
+
+
+@pytest.mark.integration
+def test_matchdict_class_method():
+    config = _make_config()
+    config.add_simple_route(
+        '/matchdict_class/{name}/{number}',
+        'tests.simple_app.MyViewsClass.matchdict_view',
+        renderer='json'
+    )
+
+    response = _make_app(config).get(
+        '/matchdict_class/sontek/1', status=200
+    )
+
+    assert response.content_type == 'application/json'
+    assert response.json == {'foo': 'sontek', 'bar': '1'}
