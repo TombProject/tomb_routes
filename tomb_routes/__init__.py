@@ -5,6 +5,8 @@ import venusian
 
 class MatchdictMapper(object):
     def __init__(self, **kwargs):
+        self.view_settings = kwargs
+        self.attr = self.view_settings.get('attr')
         self.blacklist = [
             'optional_slash',
         ]
@@ -16,7 +18,12 @@ class MatchdictMapper(object):
                 if k in kwargs:
                     del kwargs[k]
 
-            return view(request, **kwargs)
+            if inspect.isclass(view):
+                inst = view(request)
+                meth = getattr(inst, self.attr)
+                return meth(**kwargs)
+            else:
+                return view(request, **kwargs)
 
         return wrapper
 
@@ -59,7 +66,8 @@ def add_simple_route(
 
     # This lets one do stuff like:
     # config.add_simple_route('/path/to/view', MyClass.method)
-    if inspect.ismethod(target):
+    # only necessary in py27
+    if inspect.ismethod(target):  # pragma: nocover
         kwargs['attr'] = target.__name__
         target = target.im_class
 
