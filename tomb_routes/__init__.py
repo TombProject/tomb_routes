@@ -64,13 +64,6 @@ def add_simple_route(
 
     target = DottedNameResolver().maybe_resolve(target)
 
-    # This lets one do stuff like:
-    # config.add_simple_route('/path/to/view', MyClass.method)
-    # only necessary in py27
-    if inspect.ismethod(target):  # pragma: nocover
-        kwargs['attr'] = target.__name__
-        target = target.im_class
-
     if append_matchdict and 'mapper' not in kwargs:
         kwargs['mapper'] = MatchdictMapper
 

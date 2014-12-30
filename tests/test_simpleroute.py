@@ -50,7 +50,9 @@ def test_imperative_config_method():
     from tests.simple_app import MyViewsClass
     config = _make_config()
     config.add_simple_route(
-        '/path/to/view', MyViewsClass.imperative_view,
+        '/path/to/view',
+        MyViewsClass,
+        attr='imperative_view',
         renderer='json'
     )
 
@@ -65,7 +67,9 @@ def test_imperative_config_method_with_dotted_path():
     config = _make_config()
 
     config.add_simple_route(
-        '/path/to/view', 'tests.simple_app.MyViewsClass.imperative_view',
+        '/path/to/view',
+        'tests.simple_app.MyViewsClass',
+        attr='imperative_view',
         renderer='json'
     )
 
@@ -119,7 +123,8 @@ def test_matchdict_class_method():
     config = _make_config()
     config.add_simple_route(
         '/matchdict_class/{name}/{number}',
-        'tests.simple_app.MyViewsClass.matchdict_view',
+        'tests.simple_app.MyViewsClass',
+        attr='matchdict_view',
         renderer='json'
     )
 
