@@ -25,3 +25,24 @@ or you can use it from the configurator:
         '/hello/{name}', view_callable,
         renderer='json'
      )
+
+
+Inspirations
+=========================
+
+Frameworks with very simple routing (including so-called "microframeworks") are
+nothing new. Here are a few in the Python world:
+
+- minion_
+- Klein_
+- Flask_
+
+Pyramid is a very powerful and extensible web framework and it's a framework
+that we love, but sometimes we want very simple routing. This package brings
+the simplified routing from microframeworks to Pyramid, so we can have our cake
+and eat it too.
+
+
+.. _minion: https://pypi.python.org/pypi/minion
+.. _Klein: https://github.com/Twisted/Klein
+.. _Flask: http://flask.pocoo.org/
