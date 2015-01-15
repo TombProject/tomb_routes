@@ -7,6 +7,8 @@ tomb_routes
 .. image:: https://img.shields.io/travis/tomborine/tomb_routes.svg
     :target: https://travis-ci.org/tomborine/tomb_routes
 
+.. image:: https://coveralls.io/repos/tomborine/tomb_routes/badge.png?branch=master
+           :target: https://coveralls.io/r/tomborine/tomb_routes?branch=master
 
 Intro
 =================================
