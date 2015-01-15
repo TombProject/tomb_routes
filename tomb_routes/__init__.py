@@ -54,15 +54,17 @@ def add_simple_route(
         )
     """
 
-    route_name = path
+    target = DottedNameResolver().maybe_resolve(target)
+
+    route_name = target.__name__
+    if 'attr' in kwargs:
+        route_name += '.' + kwargs['attr']
 
     if append_slash:
         path += '{optional_slash:/?}'
 
     config.add_route(route_name, path)
     kwargs['route_name'] = route_name
-
-    target = DottedNameResolver().maybe_resolve(target)
 
     if append_matchdict and 'mapper' not in kwargs:
         kwargs['mapper'] = MatchdictMapper

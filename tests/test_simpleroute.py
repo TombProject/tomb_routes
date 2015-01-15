@@ -134,3 +134,36 @@ def test_matchdict_class_method():
 
     assert response.content_type == 'application/json'
     assert response.json == {'foo': 'sontek', 'bar': '1'}
+
+
+@pytest.mark.integration
+def test_imperative_route_name():
+    # Test that route_name is same as view name
+    # See https://github.com/sontek/tomb_routes/pull/5
+
+    from tests.simple_app import my_view
+
+    config = _make_config()
+    config.add_simple_route('/path/to/view', my_view, renderer='json')
+
+    route_mapper = config.get_routes_mapper()
+    routes = route_mapper.get_routes()
+
+    assert len(routes) == 1
+    assert routes[0].name == 'my_view'
+
+
+@pytest.mark.integration
+def test_declarative_route_name():
+    config = _make_config()
+    config.scan('tests.simple_app')
+
+    route_mapper = config.get_routes_mapper()
+    routes = route_mapper.get_routes()
+    route_names = [route.name for route in routes]
+
+    assert len(routes) == 4
+    assert 'MyViewsClass.imperative_view' in route_names
+    assert 'MyViewsClass.matchdict_view' in route_names
+    assert 'decorated_view' in route_names
+    assert 'matchdict_view' in route_names
