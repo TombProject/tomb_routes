@@ -1,3 +1,13 @@
+tomb_routes
+=================================
+
+.. image:: https://img.shields.io/pypi/v/tomb_routes.svg
+    :target: https://pypi.python.org/pypi/tomb_routes
+
+.. image:: https://img.shields.io/travis/sontek/tomb_routes.svg
+    :target: https://travis-ci.org/sontek/tomb_routes
+
+
 Intro
 =================================
 
