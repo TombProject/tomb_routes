@@ -1,6 +1,34 @@
 CHANGES
 =======
 
+0.0.2
+-----
+
+* setup.cfg: license = MIT
+* README.rst: Fix indentation of example
+* Added badge for coveralls
+* Add coveralls and run coverage for every env
+* .travis.yml: Add more pythons
+* README.rst: Update badges from sontek => tomborine
+* README.rst: Minor tweaks
+* README.rst: Add badges
+* Add .travis.yml
+* tox.ini: Add py26, py33, pypy3
+* Make the route name == the target name
+* Add tests for route names
+* README.rst: Add links to some similar things
+* .gitignore: Add .eggs
+* Remove support for unbound methods (not py3 compat)
+* Update setup.cfg
+* A few more tests just to prove they work
+* Update README.rst
+* AUTHORS: Add msabramo
+* Added authors and changelog
+
 0.0.1
 -----
-* Initial creation of tomb_routes
+
+* Forgot to add tests directory
+* Added tests
+* Don't send optional slash to MatchdictMapper
+* Initial stub of tomb_routes
