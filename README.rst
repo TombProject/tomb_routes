@@ -44,7 +44,7 @@ or you can use it from the configurator:
     config.add_simple_route(
         '/hello/{name}', view_callable,
         renderer='json'
-     )
+    )
 
 
 Inspirations
