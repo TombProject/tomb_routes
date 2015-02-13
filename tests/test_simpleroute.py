@@ -162,8 +162,98 @@ def test_declarative_route_name():
     routes = route_mapper.get_routes()
     route_names = [route.name for route in routes]
 
-    assert len(routes) == 4
+    assert len(routes) == 5
     assert 'MyViewsClass.imperative_view' in route_names
     assert 'MyViewsClass.matchdict_view' in route_names
     assert 'decorated_view' in route_names
     assert 'matchdict_view' in route_names
+
+
+@pytest.mark.integration
+def test_route_url_with_slash():
+    config = _make_config()
+    config.scan('tests.simple_app')
+
+    response = _make_app(config).get('/get_url', status=200)
+
+    assert response.content_type == 'application/json'
+    assert response.json == {
+        'url': 'http://localhost/matchdict/name/1'
+    }
+
+
+@pytest.mark.integration
+def test_support_pregenerator_with_slash():
+    config = _make_config()
+
+    def pregen(request, elements, kwargs):
+        kwargs['name'] = 'boomshaka'
+        return elements, kwargs
+
+    def view(request, name, number):
+        return {'name': name, 'number': number}
+
+    def view2(request):
+        return {'url': request.route_url('view')}
+
+    config = _make_config()
+    config.add_simple_route(
+        '/test',
+        view2,
+        renderer='json'
+    )
+
+    config.add_simple_route(
+        '/test/{name}',
+        view,
+        pregenerator=pregen
+    )
+
+    response = _make_app(config).get(
+        '/test',
+        status=200,
+    )
+
+    assert response.content_type == 'application/json'
+    assert response.json == {
+        'url': 'http://localhost/test/boomshaka',
+    }
+
+
+@pytest.mark.integration
+def test_support_pregenerator_without_slash():
+    config = _make_config()
+
+    def pregen(request, elements, kwargs):
+        kwargs['name'] = 'boomshaka'
+        return elements, kwargs
+
+    def view(request, name, number):
+        return {'name': name, 'number': number}
+
+    def view2(request):
+        return {'url': request.route_url('view')}
+
+    config = _make_config()
+    config.add_simple_route(
+        '/test',
+        view2,
+        renderer='json'
+    )
+
+    config.add_simple_route(
+        '/test/{name}',
+        view,
+        pregenerator=pregen,
+        append_slash=False
+    )
+
+    response = _make_app(config).get(
+        '/test',
+        status=200,
+    )
+
+    assert response.content_type == 'application/json'
+    assert response.json == {
+        'url': 'http://localhost/test/boomshaka',
+    }

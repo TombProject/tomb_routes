@@ -60,10 +60,23 @@ def add_simple_route(
     if 'attr' in kwargs:
         route_name += '.' + kwargs['attr']
 
+    current_pregen = kwargs.pop('pregenerator', None)
+
+    def pregen(request, elements, kwargs):
+        if 'optional_slash' not in kwargs:
+            kwargs['optional_slash'] = ''
+
+        if current_pregen is not None:
+            return current_pregen(request, elements, kwargs)
+        else:
+            return elements, kwargs
+
     if append_slash:
         path += '{optional_slash:/?}'
+        config.add_route(route_name, path, pregenerator=pregen)
+    else:
+        config.add_route(route_name, path, pregenerator=current_pregen)
 
-    config.add_route(route_name, path)
     kwargs['route_name'] = route_name
 
     if append_matchdict and 'mapper' not in kwargs:
