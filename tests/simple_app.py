@@ -15,6 +15,15 @@ def matchdict_view(request, name, number):
     return {'foo': name, 'bar': number}
 
 
+@simple_route('/get_url', renderer='json')
+def url_view(request):
+    return {'url': request.route_url(
+        'matchdict_view',
+        name='name',
+        number=1,
+    )}
+
+
 class MyViewsClass(object):
     def __init__(self, request):
         self.request = request
