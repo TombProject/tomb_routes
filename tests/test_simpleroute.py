@@ -266,6 +266,14 @@ def test_nested_includes():
                                 attr='imperative_view',
                                 renderer='json')
 
+        config.add_simple_route('/boom', 'tests.simple_app.MyViewsClass',
+                                attr='imperative_view',
+                                renderer='json')
+
+        config.add_simple_route('/shaka', 'tests.simple_app.MyViewsClass',
+                                attr='imperative_view',
+                                renderer='json')
+
     def v1_routes(config):
         config.include(app_routes, route_prefix='/app')
 
@@ -277,6 +285,10 @@ def test_nested_includes():
 
     response = _make_app(config).get('/v1/app', status=200)
 
+    assert response.content_type == 'application/json'
+    assert response.json == {'foo': 'bar'}
+
+    response = _make_app(config).get('/v1/app/boom', status=200)
     assert response.content_type == 'application/json'
     assert response.json == {'foo': 'bar'}
 

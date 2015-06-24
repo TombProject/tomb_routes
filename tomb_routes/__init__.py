@@ -55,10 +55,19 @@ def add_simple_route(
     """
 
     target = DottedNameResolver().maybe_resolve(target)
-
+    mapper = config.get_routes_mapper()
     route_name = target.__name__
+    route_name_count = 0
+
     if 'attr' in kwargs:
         route_name += '.' + kwargs['attr']
+
+    routes = {route.name: route for route in mapper.get_routes()}
+    orig_route_name = route_name
+
+    while route_name in routes:
+        route_name = '%s_%s' % (orig_route_name, route_name_count)
+        route_name_count += 1
 
     current_pregen = kwargs.pop('pregenerator', None)
 
@@ -71,6 +80,7 @@ def add_simple_route(
         else:
             return elements, kwargs
 
+    orig_route_prefix = config.route_prefix
     # We are nested with a route_prefix but are trying to
     # register a default route, so clear the route prefix
     # and register the route there.
@@ -83,13 +93,15 @@ def add_simple_route(
         config.add_route(route_name, path, pregenerator=pregen)
     else:
         config.add_route(route_name, path, pregenerator=current_pregen)
-
+    print(route_name, path)
     kwargs['route_name'] = route_name
 
     if append_matchdict and 'mapper' not in kwargs:
         kwargs['mapper'] = MatchdictMapper
 
     config.add_view(target, *args, **kwargs)
+    config.commit()
+    config.route_prefix = orig_route_prefix
 
 
 class simple_route(object):
