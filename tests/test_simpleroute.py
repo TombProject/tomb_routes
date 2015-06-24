@@ -257,3 +257,48 @@ def test_support_pregenerator_without_slash():
     assert response.json == {
         'url': 'http://localhost/test/boomshaka',
     }
+
+
+@pytest.mark.integration
+def test_nested_includes():
+    def app_routes(config):
+        config.add_simple_route('/', 'tests.simple_app.MyViewsClass',
+                                attr='imperative_view',
+                                renderer='json')
+
+    def v1_routes(config):
+        config.include(app_routes, route_prefix='/app')
+
+    def include(config):
+        config.include(v1_routes, route_prefix='/v1')
+
+    config = _make_config()
+    config.include(include)
+
+    response = _make_app(config).get('/v1/app', status=200)
+
+    assert response.content_type == 'application/json'
+    assert response.json == {'foo': 'bar'}
+
+
+@pytest.mark.integration
+def test_nested_includes_no_append_slash():
+    def app_routes(config):
+        config.add_simple_route('/', 'tests.simple_app.MyViewsClass',
+                                attr='imperative_view',
+                                renderer='json',
+                                append_slash=False)
+
+    def v1_routes(config):
+        config.include(app_routes, route_prefix='/app')
+
+    def include(config):
+        config.include(v1_routes, route_prefix='/v1')
+
+    config = _make_config()
+    config.include(include)
+
+    response = _make_app(config).get('/v1/app', status=200)
+
+    assert response.content_type == 'application/json'
+    assert response.json == {'foo': 'bar'}

@@ -71,6 +71,13 @@ def add_simple_route(
         else:
             return elements, kwargs
 
+    # We are nested with a route_prefix but are trying to
+    # register a default route, so clear the route prefix
+    # and register the route there.
+    if path == '/' or path == '' and config.route_prefix:
+        path = config.route_prefix
+        config.route_prefix = ''
+
     if append_slash:
         path += '{optional_slash:/?}'
         config.add_route(route_name, path, pregenerator=pregen)
