@@ -93,7 +93,7 @@ def add_simple_route(
         config.add_route(route_name, path, pregenerator=pregen)
     else:
         config.add_route(route_name, path, pregenerator=current_pregen)
-    print(route_name, path)
+
     kwargs['route_name'] = route_name
 
     if append_matchdict and 'mapper' not in kwargs:
