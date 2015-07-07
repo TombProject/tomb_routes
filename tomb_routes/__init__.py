@@ -19,7 +19,14 @@ class MatchdictMapper(object):
                     del kwargs[k]
 
             if inspect.isclass(view):
-                inst = view(request)
+                arg_len = len(inspect.getargspec(view.__init__).args)
+                if arg_len == 2:
+                    inst = view(request)
+                elif arg_len == 3:
+                    inst = view(context, request)
+                else:
+                    raise Exception("Class should accept `context` and "
+                                    "`request` args only")
                 meth = getattr(inst, self.attr)
                 return meth(**kwargs)
             else:

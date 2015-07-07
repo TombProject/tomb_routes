@@ -162,7 +162,7 @@ def test_declarative_route_name():
     routes = route_mapper.get_routes()
     route_names = [route.name for route in routes]
 
-    assert len(routes) == 5
+    assert len(routes) == 7
     assert 'MyViewsClass.imperative_view' in route_names
     assert 'MyViewsClass.matchdict_view' in route_names
     assert 'decorated_view' in route_names
@@ -314,3 +314,46 @@ def test_nested_includes_no_append_slash():
 
     assert response.content_type == 'application/json'
     assert response.json == {'foo': 'bar'}
+
+
+@pytest.mark.integration
+def test_nested_includes_no_append_slash_with_context():
+    def app_routes(config):
+        config.add_simple_route(
+            '/', 'tests.simple_app.MyViewsClassWithContext',
+            attr='imperative_view',
+            renderer='json',
+            append_slash=False
+        )
+
+    def v1_routes(config):
+        config.include(app_routes, route_prefix='/app')
+
+    def include(config):
+        config.include(v1_routes, route_prefix='/v1')
+
+    config = _make_config()
+    config.include(include)
+
+    response = _make_app(config).get('/v1/app', status=200)
+
+    assert response.content_type == 'application/json'
+    assert response.json == {'foo': 'bar'}
+
+
+@pytest.mark.integration
+def test_constructor_count_not_matching():
+    config = _make_config()
+    config.add_simple_route(
+        '/matchdict_class/{name}/{number}',
+        'tests.simple_app.BadClass',
+        attr='matchdict_view',
+        renderer='json'
+    )
+
+    with pytest.raises(Exception) as e:
+        _make_app(config).get(
+            '/matchdict_class/sontek/1', status=200
+        )
+    msg = "Exception: Class should accept `context` and `request` args only"
+    assert msg in str(e)
