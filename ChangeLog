@@ -1,6 +1,17 @@
 CHANGES
 =======
 
+* Added support for ctors with context
+* Missed something on py26
+* Drop py2.6 support, its shit
+* Remove print statement
+* Support mulitple named routes
+* Support nested includes with config prefix without /
+* This uses a pregenerator so that request.route_url works easily
+* setup.cfg: Make John and Marc co-authors
+* Update AUTHORS and ChangeLog
+* Update home-page: sontek => tomborine
+
 0.0.2
 -----
 
