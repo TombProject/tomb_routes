@@ -373,7 +373,7 @@ def test_imperative_config_function_root():
 
 
 @pytest.mark.integration
-def test_imperative_config_function_predicates():
+def test_imperative_config_function_accept_predicates():
     from tests.simple_app import my_view
 
     config = _make_config()
@@ -382,6 +382,31 @@ def test_imperative_config_function_predicates():
                             accept='application/json')
     config.add_simple_route('/', my_view, renderer='string',
                             accept='text/plain')
+
+    response = _make_app(config).get(
+        '/', status=200,
+        headers={'accept': 'text/plain'}
+    )
+
+    assert response.content_type == 'text/plain'
+    assert response.body == b"{'foo': 'bar'}"
+
+    response = _make_app(config).get('/', status=200, headers={
+        'Accept': 'application/json'
+    })
+
+    assert response.content_type == 'application/json'
+    assert response.json == {'foo': 'bar'}
+
+
+@pytest.mark.integration
+def test_imperative_config_function_accept_predicates_defaults():
+    from tests.simple_app import my_view
+
+    config = _make_config()
+
+    config.add_simple_route('/', my_view, renderer='json')
+    config.add_simple_route('/', my_view, renderer='string')
 
     response = _make_app(config).get(
         '/', status=200,

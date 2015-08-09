@@ -3,6 +3,12 @@ import inspect
 import venusian
 
 
+ACCEPT_RENDERER_MAP = {
+    'json': 'application/json',
+    'string': 'text/plain',
+}
+
+
 class MatchdictMapper(object):
     def __init__(self, **kwargs):
         self.view_settings = kwargs
@@ -39,6 +45,7 @@ def add_simple_route(
         config, path, target,
         append_slash=True,
         append_matchdict=True,
+        default_accept='text/html',
         *args, **kwargs
 ):
     """Configuration directive that can be used to register a simple route to
@@ -67,12 +74,15 @@ def add_simple_route(
     route_name_count = 0
 
     route_kwargs = {}
-    route_kwarg_keys = ['accept']
 
-    for route_key in route_kwarg_keys:
-        if route_key in kwargs:
-            val = kwargs.pop(route_key)
-            route_kwargs[route_key] = val
+    if 'accept' in kwargs:
+        val = kwargs.pop('accept')
+        route_kwargs['accept'] = val
+    else:
+        # Disable */* by default, only accept 'text/html'
+        renderer = kwargs.get('renderer', 'html')
+        acceptor = ACCEPT_RENDERER_MAP.get(renderer, default_accept)
+        route_kwargs['accept'] = acceptor
 
     if 'attr' in kwargs:
         route_name += '.' + kwargs['attr']
