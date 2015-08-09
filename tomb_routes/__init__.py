@@ -66,6 +66,14 @@ def add_simple_route(
     route_name = target.__name__
     route_name_count = 0
 
+    route_kwargs = {}
+    route_kwarg_keys = ['accept']
+
+    for route_key in route_kwarg_keys:
+        if route_key in kwargs:
+            val = kwargs.pop(route_key)
+            route_kwargs[route_key] = val
+
     if 'attr' in kwargs:
         route_name += '.' + kwargs['attr']
 
@@ -97,9 +105,15 @@ def add_simple_route(
 
     if append_slash:
         path += '{optional_slash:/?}'
-        config.add_route(route_name, path, pregenerator=pregen)
+        config.add_route(
+            route_name, path, pregenerator=pregen,
+            **route_kwargs
+        )
     else:
-        config.add_route(route_name, path, pregenerator=current_pregen)
+        config.add_route(
+            route_name, path, pregenerator=current_pregen,
+            **route_kwargs
+        )
 
     kwargs['route_name'] = route_name
 
