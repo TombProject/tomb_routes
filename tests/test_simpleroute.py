@@ -357,3 +357,16 @@ def test_constructor_count_not_matching():
         )
     msg = "Exception: Class should accept `context` and `request` args only"
     assert msg in str(e)
+
+
+@pytest.mark.integration
+def test_imperative_config_function_root():
+    from tests.simple_app import my_view
+
+    config = _make_config()
+    config.add_simple_route('/', my_view, renderer='json')
+
+    response = _make_app(config).get('/', status=200)
+
+    assert response.content_type == 'application/json'
+    assert response.json == {'foo': 'bar'}
