@@ -389,7 +389,7 @@ def test_imperative_config_function_predicates():
     )
 
     assert response.content_type == 'text/plain'
-    assert response.body == "{'foo': 'bar'}"
+    assert response.body == b"{'foo': 'bar'}"
 
     response = _make_app(config).get('/', status=200, headers={
         'Accept': 'application/json'
