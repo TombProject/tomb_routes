@@ -1,4 +1,5 @@
 from pyramid.path import DottedNameResolver
+import functools
 import inspect
 import venusian
 
@@ -18,6 +19,7 @@ class MatchdictMapper(object):
         ]
 
     def __call__(self, view):
+        @functools.wraps(view)
         def wrapper(context, request):
             kwargs = request.matchdict.copy()
             for k in self.blacklist:

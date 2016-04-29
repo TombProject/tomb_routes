@@ -1,5 +1,8 @@
 CHANGES
 =======
+0.0.8
+-----
+* Added functools.wraps on the viewmapper
 
 0.0.2
 -----
